@@ -1,0 +1,107 @@
+.liquid-glass-switch {
+  position: relative;
+  isolation: isolate;
+  width: var(--track-width);
+  height: var(--track-height);
+  overflow: visible;
+  --lg-switch-off: #8e8e93;
+  --lg-switch-on: #34c759;
+  --lg-switch-on-light: #62e77e;
+  --lg-switch-on-dark: #1ca446;
+  --lg-switch-puck: #ffffff;
+  --lg-switch-focus: rgba(255, 255, 255, 0.82);
+}
+
+.liquid-glass-switch__canvas {
+  position: absolute;
+  z-index: 2;
+  left: calc(var(--glass-bleed) * -1);
+  top: calc(var(--glass-bleed) * -1);
+  width: calc(var(--track-width) + var(--glass-bleed) * 2);
+  height: calc(var(--track-height) + var(--glass-bleed) * 2);
+  display: block;
+  pointer-events: none;
+}
+
+.liquid-glass-switch__track,
+.liquid-glass-switch__button {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+}
+
+.liquid-glass-switch__track {
+  z-index: 1;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.2), transparent 42%),
+    var(--lg-switch-off);
+  box-shadow:
+    0 18px 38px rgba(0, 0, 0, 0.22),
+    0 1px 0 rgba(255, 255, 255, 0.28) inset,
+    0 -1px 2px rgba(0, 0, 0, 0.12) inset;
+}
+
+.liquid-glass-switch__track-fill {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.24), transparent 42%),
+    linear-gradient(135deg, var(--lg-switch-on-light), var(--lg-switch-on) 45%, var(--lg-switch-on-dark));
+  opacity: var(--switch-progress);
+  transition: opacity 95ms ease;
+}
+
+.liquid-glass-switch__rest-puck {
+  position: absolute;
+  z-index: 3;
+  left: calc(var(--switch-inset) + var(--rest-progress) * var(--switch-travel));
+  top: var(--puck-top);
+  width: var(--puck-width);
+  height: var(--puck-height);
+  border-radius: 9999px;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--lg-switch-puck) 98%, white), color-mix(in srgb, var(--lg-switch-puck) 94%, #e9edf2)),
+    var(--lg-switch-puck);
+  box-shadow:
+    0 10px 22px rgba(18, 26, 38, calc(0.2 * var(--rest-shadow))),
+    0 2px 5px rgba(18, 26, 38, calc(0.16 * var(--rest-shadow))),
+    0 1px 1px rgba(255, 255, 255, calc(0.9 * var(--rest-shadow))) inset;
+  opacity: var(--rest-opacity);
+  transform: scale(var(--rest-scale));
+  transition:
+    left 80ms cubic-bezier(0.2, 0.9, 0.22, 1),
+    opacity 30ms linear;
+}
+
+.liquid-glass-switch__button {
+  z-index: 4;
+  padding: 0;
+  border: 0;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  touch-action: none;
+}
+
+.liquid-glass-switch.is-grabbable.is-holdable .liquid-glass-switch__button {
+  cursor: grab;
+}
+
+.liquid-glass-switch.is-grabbable.is-holdable .liquid-glass-switch__button:active {
+  cursor: grabbing;
+}
+
+.liquid-glass-switch__button:focus-visible {
+  outline: 2px solid var(--lg-switch-focus);
+  outline-offset: 8px;
+}
+
+.liquid-glass-switch.is-disabled {
+  opacity: 0.62;
+}
+
+.liquid-glass-switch.is-disabled .liquid-glass-switch__button {
+  cursor: not-allowed;
+}

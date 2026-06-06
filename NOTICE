@@ -1,0 +1,18 @@
+Liquid Glass Switch
+
+This project includes adapted WebGL renderer and shader code from Liquid Glass Studio.
+
+Original project:
+https://github.com/iyinchao/liquid-glass-studio
+
+Original author:
+Charles Yin
+
+Original copyright:
+Copyright (c) 2024 Charles Yin
+
+Original license:
+MIT License
+
+The switch interaction, React component API, packaging, demo, and integration guidance in this
+repository are maintained by Liquid Glass Switch contributors.

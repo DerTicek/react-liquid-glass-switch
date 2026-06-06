@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "declaration": true,
+    "declarationDir": "dist",
+    "emitDeclarationOnly": true,
+    "noEmit": false,
+    "stripInternal": true
+  },
+  "include": [
+    "src/index.ts",
+    "src/LiquidGlassSwitch.tsx",
+    "src/internal/**/*.ts",
+    "src/vite-env.d.ts"
+  ],
+  "exclude": ["src/demo"]
+}

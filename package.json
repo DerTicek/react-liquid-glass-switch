@@ -1,0 +1,68 @@
+{
+  "name": "liquid-glass-switch",
+  "version": "0.1.0",
+  "description": "A React liquid glass toggle switch with WebGL refraction, drag support, and themeable colors.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Liquid Glass Switch contributors",
+  "keywords": [
+    "react",
+    "switch",
+    "toggle",
+    "liquid-glass",
+    "webgl",
+    "ui",
+    "animation"
+  ],
+  "homepage": "https://github.com/your-name/liquid-glass-switch#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-name/liquid-glass-switch.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-name/liquid-glass-switch/issues"
+  },
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./styles.css": "./dist/liquid-glass-switch.css"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "NOTICE",
+    "README.md"
+  ],
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "npm run build:lib",
+    "build:lib": "vite build && tsc -p tsconfig.build.json",
+    "build:demo": "vite build --config vite.demo.config.ts",
+    "build:all": "npm run build:lib && npm run build:demo",
+    "typecheck": "tsc -p tsconfig.build.json --noEmit",
+    "preview": "vite preview --outDir demo-dist",
+    "preview:demo": "vite preview --outDir demo-dist"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react-swc": "^3.9.0",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1"
+  }
+}
