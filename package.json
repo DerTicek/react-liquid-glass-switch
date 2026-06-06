@@ -14,13 +14,13 @@
     "ui",
     "animation"
   ],
-  "homepage": "https://github.com/your-name/liquid-glass-switch#readme",
+  "homepage": "https://github.com/DerTicek/react-liquid-glass-switch#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-name/liquid-glass-switch.git"
+    "url": "https://github.com/DerTicek/react-liquid-glass-switch.git"
   },
   "bugs": {
-    "url": "https://github.com/your-name/liquid-glass-switch/issues"
+    "url": "https://github.com/DerTicek/react-liquid-glass-switch/issues"
   },
   "sideEffects": [
     "**/*.css"
@@ -34,7 +34,7 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
-    "./styles.css": "./dist/liquid-glass-switch.css"
+    "./styles.css": "./dist/style.css"
   },
   "files": [
     "dist",

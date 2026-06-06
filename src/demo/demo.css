@@ -141,10 +141,14 @@ button {
   opacity: 1;
 }
 
-.demo-backdrop-split {
-  --demo-backdrop-color: #4d4d4d;
-  --demo-backdrop-image: linear-gradient(180deg, #e6e6e6 0 50%, #4d4d4d 50% 100%);
-  --demo-backdrop-size: auto;
+.demo-backdrop-image {
+  --demo-backdrop-color: #151515;
+  --demo-backdrop-image:
+    var(--demo-local-image, linear-gradient(145deg, #22252b, #0f1115)),
+    linear-gradient(145deg, #22252b, #0f1115);
+  --demo-backdrop-size: cover, auto;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .demo-distortion-field .liquid-glass-switch {
@@ -258,8 +262,7 @@ button {
 
 .demo-range-control,
 .demo-color-control,
-.demo-toggle-control,
-.demo-select-control {
+.demo-toggle-control {
   display: grid;
   gap: 8px;
   min-width: 0;
@@ -269,16 +272,14 @@ button {
 
 .demo-control-row,
 .demo-color-control,
-.demo-toggle-control,
-.demo-select-control {
+.demo-toggle-control {
   align-items: center;
   grid-template-columns: minmax(0, 1fr) auto;
 }
 
 .demo-control-row,
 .demo-color-control,
-.demo-toggle-control,
-.demo-select-control {
+.demo-toggle-control {
   display: grid;
 }
 
@@ -308,17 +309,103 @@ button {
   accent-color: #34c759;
 }
 
-.demo-select-control {
+.demo-backdrop-picker {
+  display: grid;
+  gap: 10px;
   grid-column: 1 / -1;
 }
 
-.demo-select-control select {
-  min-width: 156px;
-  min-height: 34px;
-  border: 1px solid rgba(17, 24, 39, 0.16);
+.demo-backdrop-title {
+  color: #374151;
+  font-size: 0.82rem;
+}
+
+.demo-backdrop-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
+  gap: 8px;
+}
+
+.demo-backdrop-card {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  padding: 7px;
+  border: 1px solid rgba(17, 24, 39, 0.12);
   border-radius: 8px;
-  background: #ffffff;
-  color: #111827;
+  background: rgba(255, 255, 255, 0.72);
+  color: #374151;
+  font-size: 0.72rem;
+  line-height: 1.15;
+  text-align: center;
+}
+
+.demo-backdrop-card[aria-pressed="true"],
+.demo-backdrop-card.is-selected {
+  border-color: rgba(52, 199, 89, 0.78);
+  box-shadow:
+    0 0 0 2px rgba(52, 199, 89, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.demo-backdrop-upload {
+  cursor: pointer;
+}
+
+.demo-backdrop-upload input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.demo-backdrop-thumb {
+  display: block;
+  aspect-ratio: 1.35;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(17, 24, 39, 0.1);
+  border-radius: 6px;
+  background-color: #151515;
+  background-size: cover;
+  background-position: center;
+}
+
+.demo-backdrop-thumb-demo {
+  background:
+    linear-gradient(90deg, rgba(18, 24, 38, 0.12) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(18, 24, 38, 0.12) 1px, transparent 1px),
+    linear-gradient(145deg, #f9fbff 0%, #e8eef7 52%, #f7f5ed 100%);
+  background-size:
+    10px 10px,
+    10px 10px,
+    auto;
+}
+
+.demo-backdrop-thumb-plain {
+  background: #151515;
+}
+
+.demo-backdrop-thumb-checker {
+  background:
+    conic-gradient(from 90deg, #ffffff 0 25%, #bfc2c8 0 50%, #ffffff 0 75%, #bfc2c8 0) 0 0 / 16px 16px;
+}
+
+.demo-backdrop-thumb-quadrants {
+  background:
+    repeating-linear-gradient(0deg, #ffffff 0 8px, #000000 8px 16px) top left / 50% 50% no-repeat,
+    repeating-linear-gradient(90deg, #ffffff 0 8px, #000000 8px 16px) bottom right / 50% 50% no-repeat,
+    linear-gradient(180deg, transparent 0 50%, #000000 50% 100%),
+    linear-gradient(90deg, transparent 0 50%, #151515 50% 100%);
+}
+
+.demo-backdrop-thumb-image {
+  background-image:
+    var(--demo-local-image, linear-gradient(145deg, #2c3038, #101318)),
+    linear-gradient(145deg, #2c3038, #101318);
 }
 
 .demo-reset {
@@ -358,7 +445,8 @@ button {
   }
 
   .demo-color-grid,
-  .demo-toggle-grid {
+  .demo-toggle-grid,
+  .demo-backdrop-grid {
     grid-template-columns: 1fr;
   }
 }

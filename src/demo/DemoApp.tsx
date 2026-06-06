@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import {
   LiquidGlassSwitch,
   type LiquidGlassSwitchBackdrop,
@@ -46,6 +46,18 @@ type ColorControlProps = {
   onChange: (value: string) => void;
   value: string;
 };
+
+type BackdropChoice = {
+  label: string;
+  value: Exclude<LiquidGlassSwitchBackdrop, "image">;
+};
+
+const backdropChoices: BackdropChoice[] = [
+  { label: "Demo grid", value: "demo" },
+  { label: "Plain", value: "plain" },
+  { label: "Checker", value: "checker" },
+  { label: "Quadrants", value: "quadrants" },
+];
 
 function formatNumber(value: number) {
   return Number.isInteger(value) ? value.toFixed(0) : value.toFixed(2);
@@ -109,6 +121,8 @@ export default function DemoApp() {
   const [grabbable, setGrabbable] = useState(true);
   const [holdable, setHoldable] = useState(true);
   const [backdrop, setBackdrop] = useState<LiquidGlassSwitchBackdrop>("demo");
+  const [localImageUrl, setLocalImageUrl] = useState<string | null>(null);
+  const [localImageName, setLocalImageName] = useState("");
   const [offColor, setOffColor] = useState("#8e8e93");
   const [onColor, setOnColor] = useState("#34c759");
   const [onLightColor, setOnLightColor] = useState("#62e77e");
@@ -139,13 +153,46 @@ export default function DemoApp() {
     setGlass(defaultGlass);
   }
 
+  function chooseImage(file: File | undefined) {
+    if (!file) {
+      return;
+    }
+
+    const nextUrl = URL.createObjectURL(file);
+
+    setLocalImageUrl((currentUrl) => {
+      if (currentUrl) {
+        URL.revokeObjectURL(currentUrl);
+      }
+
+      return nextUrl;
+    });
+    setLocalImageName(file.name);
+    setBackdrop("image");
+  }
+
+  useEffect(() => {
+    return () => {
+      if (localImageUrl) {
+        URL.revokeObjectURL(localImageUrl);
+      }
+    };
+  }, [localImageUrl]);
+
+  const previewStyle = localImageUrl
+    ? ({
+        "--demo-local-image": `url("${localImageUrl}")`,
+      } as CSSProperties)
+    : undefined;
+
   return (
     <main className="demo-shell">
       <section className="demo-playground" aria-labelledby="demo-title">
         <div className="demo-preview" aria-label="Live liquid glass switch preview">
-          <div className={`demo-distortion-field demo-backdrop-${backdrop}`}>
+          <div className={`demo-distortion-field demo-backdrop-${backdrop}`} style={previewStyle}>
             <LiquidGlassSwitch
               backdrop={backdrop}
+              backdropImage={localImageUrl}
               checked={checked}
               colors={{
                 off: offColor,
@@ -193,19 +240,42 @@ export default function DemoApp() {
                 onChange={(value) => updateGlass("blurEdge", value)}
               />
             </div>
-            <label className="demo-select-control">
-              <span>Shader backdrop</span>
-              <select
-                onChange={(event) => setBackdrop(event.currentTarget.value as LiquidGlassSwitchBackdrop)}
-                value={backdrop}
-              >
-                <option value="demo">Demo grid</option>
-                <option value="plain">Plain</option>
-                <option value="checker">Checker</option>
-                <option value="quadrants">Quadrants</option>
-                <option value="split">Split</option>
-              </select>
-            </label>
+            <div className="demo-backdrop-picker" aria-label="Shader backdrop">
+              <span className="demo-backdrop-title">Shader backdrop</span>
+              <div className="demo-backdrop-grid">
+                {backdropChoices.map((choice) => (
+                  <button
+                    aria-pressed={backdrop === choice.value}
+                    className="demo-backdrop-card"
+                    key={choice.value}
+                    onClick={() => setBackdrop(choice.value)}
+                    type="button"
+                  >
+                    <span
+                      aria-hidden="true"
+                      className={`demo-backdrop-thumb demo-backdrop-thumb-${choice.value}`}
+                    />
+                    <span>{choice.label}</span>
+                  </button>
+                ))}
+                <label
+                  className={`demo-backdrop-card demo-backdrop-upload${backdrop === "image" ? " is-selected" : ""}`}
+                >
+                  <input
+                    accept="image/*"
+                    aria-label="Choose local image backdrop"
+                    onChange={(event) => chooseImage(event.currentTarget.files?.[0])}
+                    type="file"
+                  />
+                  <span
+                    aria-hidden="true"
+                    className="demo-backdrop-thumb demo-backdrop-thumb-image"
+                    style={previewStyle}
+                  />
+                  <span>{localImageName || "Local image"}</span>
+                </label>
+              </div>
+            </div>
           </section>
 
           <section className="demo-control-group" aria-label="Track colors">

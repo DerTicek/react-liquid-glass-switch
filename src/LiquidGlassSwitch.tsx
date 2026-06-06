@@ -8,7 +8,7 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import "./LiquidGlassSwitch.css";
-import { MultiPassRenderer } from "./internal/GLUtils";
+import { MultiPassRenderer, loadTextureFromURL } from "./internal/GLUtils";
 
 import VertexShader from "./internal/shaders/vertex.glsl?raw";
 import FragmentBgShader from "./internal/shaders/fragment-bg.glsl?raw";
@@ -25,7 +25,7 @@ export type LiquidGlassSwitchColors = {
   focus?: string;
 };
 
-export type LiquidGlassSwitchBackdrop = "plain" | "checker" | "quadrants" | "split" | "demo";
+export type LiquidGlassSwitchBackdrop = "plain" | "checker" | "quadrants" | "demo" | "image";
 
 export type LiquidGlassSwitchGlassSettings = {
   refThickness: number;
@@ -56,6 +56,7 @@ export type LiquidGlassSwitchProps = {
   defaultChecked?: boolean;
   disabled?: boolean;
   backdrop?: LiquidGlassSwitchBackdrop;
+  backdropImage?: string | null;
   glass?: Partial<LiquidGlassSwitchGlassSettings>;
   grabbable?: boolean;
   height?: number;
@@ -121,6 +122,10 @@ type RenderState = {
   renderer: MultiPassRenderer | null;
   canvasInfo: CanvasInfo;
   raf: number | null;
+  bgTexture: WebGLTexture | null;
+  bgTextureRatio: number;
+  bgTextureUrl: string | null;
+  bgTextureLoadingUrl: string | null;
 };
 
 type DragState = {
@@ -289,11 +294,11 @@ function getBackdropType(backdrop: LiquidGlassSwitchBackdrop) {
   if (backdrop === "quadrants") {
     return 1;
   }
-  if (backdrop === "split") {
-    return 2;
-  }
   if (backdrop === "demo") {
     return 13;
+  }
+  if (backdrop === "image") {
+    return 11;
   }
 
   return 12;
@@ -391,6 +396,7 @@ export default function LiquidGlassSwitch({
   ariaLabelOff = "Turn switch off",
   ariaLabelOn = "Turn switch on",
   backdrop = "plain",
+  backdropImage = null,
   checked,
   className = "",
   colors,
@@ -449,16 +455,22 @@ export default function LiquidGlassSwitch({
     renderer: null,
     canvasInfo,
     raf: null,
+    bgTexture: null,
+    bgTextureRatio: 1,
+    bgTextureUrl: null,
+    bgTextureLoadingUrl: null,
   });
   const switchColorsRef = useRef(switchColors);
   const switchGlassRef = useRef(switchGlass);
   const backdropRef = useRef(backdrop);
+  const backdropImageRef = useRef(backdropImage);
 
   metricsRef.current = metrics;
   renderStateRef.current.canvasInfo = canvasInfo;
   switchColorsRef.current = switchColors;
   switchGlassRef.current = switchGlass;
   backdropRef.current = backdrop;
+  backdropImageRef.current = backdropImage;
 
   const publishSwitchState = useCallback(() => {
     const spring = springRef.current;
@@ -897,9 +909,43 @@ export default function LiquidGlassSwitch({
       const currentCanvasInfo = state.canvasInfo;
       const currentColors = switchColorsRef.current;
       const currentGlass = switchGlassRef.current;
+      const currentBackdrop = backdropRef.current;
+      const currentBackdropImage = backdropImageRef.current;
       const blurRadius = currentGlass.blurRadius;
       const glassPill = getGlassPill(springRef.current, metricsRef.current);
       const center = getPillCenterUniform(glassPill, currentCanvasInfo);
+      const shouldUseImageBackdrop = currentBackdrop === "image" && Boolean(currentBackdropImage);
+
+      if (
+        gl &&
+        shouldUseImageBackdrop &&
+        currentBackdropImage &&
+        state.bgTextureUrl !== currentBackdropImage &&
+        state.bgTextureLoadingUrl !== currentBackdropImage
+      ) {
+        state.bgTextureLoadingUrl = currentBackdropImage;
+        loadTextureFromURL(gl, currentBackdropImage)
+          .then(({ texture, ratio }) => {
+            if (renderStateRef.current.bgTexture && renderStateRef.current.bgTexture !== texture) {
+              gl.deleteTexture(renderStateRef.current.bgTexture);
+            }
+
+            if (backdropImageRef.current !== currentBackdropImage) {
+              gl.deleteTexture(texture);
+              return;
+            }
+
+            renderStateRef.current.bgTexture = texture;
+            renderStateRef.current.bgTextureRatio = ratio;
+            renderStateRef.current.bgTextureUrl = currentBackdropImage;
+            renderStateRef.current.bgTextureLoadingUrl = null;
+          })
+          .catch(() => {
+            if (renderStateRef.current.bgTextureLoadingUrl === currentBackdropImage) {
+              renderStateRef.current.bgTextureLoadingUrl = null;
+            }
+          });
+      }
 
       state.raf = requestAnimationFrame(render);
 
@@ -926,9 +972,15 @@ export default function LiquidGlassSwitch({
 
       renderer.render({
         bgPass: {
-          u_bgType: getBackdropType(backdropRef.current),
-          u_bgTextureRatio: 1,
-          u_bgTextureReady: 0,
+          u_bgType: getBackdropType(currentBackdrop),
+          ...(state.bgTexture ? { u_bgTexture: state.bgTexture } : {}),
+          u_bgTextureRatio: state.bgTextureRatio,
+          u_bgTextureReady:
+            shouldUseImageBackdrop &&
+            state.bgTexture !== null &&
+            state.bgTextureUrl === currentBackdropImage
+              ? 1
+              : 0,
           u_switchOffColor: hexToRgb01(currentColors.off),
           u_switchOnColor: hexToRgb01(currentColors.on),
           u_switchTrackRect: getSwitchTrackUniform(metricsRef.current, currentCanvasInfo),
@@ -973,6 +1025,10 @@ export default function LiquidGlassSwitch({
       if (animationRafRef.current !== null) {
         cancelAnimationFrame(animationRafRef.current);
         animationRafRef.current = null;
+      }
+      if (effectState.bgTexture !== null && gl) {
+        gl.deleteTexture(effectState.bgTexture);
+        effectState.bgTexture = null;
       }
       renderer.dispose();
       effectState.renderer = null;

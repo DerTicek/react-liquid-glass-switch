@@ -4,6 +4,14 @@ A draggable React toggle switch with a WebGL liquid glass puck, reverse lens dis
 
 This package is built for frontends that want a polished switch without bringing in a full design system.
 
+## Live Demo
+
+[Try the live demo](https://react-liquid-glass-switch-9135f5ito-derticeks-projects.vercel.app/)
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/DerTicek/react-liquid-glass-switch/main/assets/liquid-glass-switch-demo.gif" alt="Liquid Glass Switch animation" width="640" />
+</p>
+
 ## Features
 
 - React component with TypeScript types
@@ -11,7 +19,7 @@ This package is built for frontends that want a polished switch without bringing
 - Click, hold, and drag interactions
 - Controlled and uncontrolled modes
 - Themeable on color, off color, puck color, size, labels, interaction behavior, and glass tuning
-- Live Vite playground with real-time controls for size, colors, backdrop, drag, hold, refraction, glare, and reverse lens settings
+- Live Vite playground with real-time controls for size, colors, backdrop previews, local image backdrops, drag, hold, refraction, glare, and reverse lens settings
 - CSS included, no Tailwind requirement
 - Vite demo included
 
@@ -23,16 +31,14 @@ See [NOTICE](NOTICE) and [LICENSE](LICENSE) for details.
 
 ## Install
 
-When published to npm:
-
 ```bash
 npm install liquid-glass-switch
 ```
 
-Until then, install from GitHub after you publish this repo:
+You can also install the GitHub repo directly:
 
 ```bash
-npm install github:your-name/liquid-glass-switch
+npm install github:DerTicek/react-liquid-glass-switch
 ```
 
 ## Quick Start
@@ -130,7 +136,8 @@ Use `grabbable={false}` for click-only switches. Use `holdable={false}` if press
 | `height` | `number` | proportional | Track height in CSS pixels. |
 | `colors` | `LiquidGlassSwitchColors` | green theme | Theme tokens for the track, puck, and focus ring. |
 | `glass` | `Partial<LiquidGlassSwitchGlassSettings>` | iOS-like preset | Shader tuning for refraction, glare, blur, reverse lens, and shape behavior. |
-| `backdrop` | `"plain" \| "checker" \| "quadrants" \| "split" \| "demo"` | `"plain"` | Internal shader backdrop sampled by the glass puck. Use `"demo"` to make refraction easy to inspect. |
+| `backdrop` | `"plain" \| "checker" \| "quadrants" \| "demo" \| "image"` | `"plain"` | Internal shader backdrop sampled by the glass puck. Use `"demo"` to make refraction easy to inspect. |
+| `backdropImage` | `string \| null` | `null` | Object URL or image URL used when `backdrop="image"`. |
 | `ariaLabelOn` | `string` | `"Turn switch on"` | Label when the current action turns the switch on. |
 | `ariaLabelOff` | `string` | `"Turn switch off"` | Label when the current action turns the switch off. |
 | `className` | `string` | `""` | Extra class on the root element. |
@@ -168,7 +175,9 @@ export default function ClientSwitch() {
 }
 ```
 
-## Local Development
+## Development
+
+For contributors working on the package locally:
 
 ```bash
 npm install
@@ -179,9 +188,9 @@ npm run build:demo
 
 The demo runs through Vite and imports the local source component.
 
-## Deploy The Demo To Vercel
+## Demo Deployment
 
-This repo is ready to import into Vercel as a static Vite demo site.
+The demo can be deployed as a static Vite site on Vercel.
 
 Vercel uses [vercel.json](vercel.json):
 
@@ -192,7 +201,7 @@ Vercel uses [vercel.json](vercel.json):
 }
 ```
 
-Use the project root when importing the repo. The demo build outputs `demo-dist`, while `npm run build` and `npm run build:lib` keep producing the npm package files in `dist`.
+Use the project root when importing the repository. The demo build outputs `demo-dist`, while `npm run build` and `npm run build:lib` produce the package files in `dist`.
 
 For a local production preview of the demo:
 
