@@ -6,23 +6,23 @@ import {
 } from "../index";
 
 const defaultGlass: LiquidGlassSwitchGlassSettings = {
-  refThickness: 4.92,
-  refFactor: 1.52,
-  refDispersion: 9.06,
-  refFresnelRange: 30,
-  refFresnelHardness: 20,
-  reverseLens: 0.17,
-  blurRadius: 0,
+  refThickness: 7.2,
+  refFactor: 1.85,
+  refDispersion: 8.48,
+  refFresnelRange: 34,
+  refFresnelHardness: 16,
+  reverseLens: 0.22,
+  blurRadius: 1,
   blurEdge: true,
   shapeRoundness: 2,
-  mergeRate: 0.05,
+  mergeRate: 0.055,
   step: 9,
-  glareSize: 27.76,
-  glareHardness: 20,
-  glareIntensity: 90,
-  glareConvergence: 50,
-  glareOppositeSide: 80,
-  glareAngle: -45,
+  glareSize: 31,
+  glareHardness: 18,
+  glareIntensity: 82,
+  glareConvergence: 56,
+  glareOppositeSide: 78,
+  glareAngle: -42,
 };
 
 type RangeControlProps = {
@@ -125,8 +125,8 @@ export default function DemoApp() {
   const [localImageName, setLocalImageName] = useState("");
   const [offColor, setOffColor] = useState("#8e8e93");
   const [onColor, setOnColor] = useState("#34c759");
-  const [onLightColor, setOnLightColor] = useState("#62e77e");
-  const [onDarkColor, setOnDarkColor] = useState("#1ca446");
+  const [onLightColor, setOnLightColor] = useState("#5ee878");
+  const [onDarkColor, setOnDarkColor] = useState("#1fb84a");
   const [glass, setGlass] = useState<LiquidGlassSwitchGlassSettings>(defaultGlass);
 
   function updateGlass<K extends keyof LiquidGlassSwitchGlassSettings>(
@@ -148,8 +148,8 @@ export default function DemoApp() {
     setBackdrop("demo");
     setOffColor("#8e8e93");
     setOnColor("#34c759");
-    setOnLightColor("#62e77e");
-    setOnDarkColor("#1ca446");
+    setOnLightColor("#5ee878");
+    setOnDarkColor("#1fb84a");
     setGlass(defaultGlass);
   }
 

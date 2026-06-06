@@ -332,6 +332,18 @@ vec2 getReverseLensUV(vec2 uv) {
   return clamp(centerUv + (uv - centerUv) * (1.0 + u_reverseLensFactor), vec2(0.0), vec2(1.0));
 }
 
+vec3 applyGlassVerticalShade(vec3 color) {
+  float halfHeight = max(u_shapeHeight * u_dpr * 0.5, 1.0);
+  float localY = clamp((gl_FragCoord.y - (u_mouseSpring.y - halfHeight)) / (halfHeight * 2.0), 0.0, 1.0);
+  float topLift = smoothstep(0.34, 1.0, localY) * 0.105;
+  float lowerShade = smoothstep(0.7, 0.0, localY) * 0.14;
+
+  color = mix(color, vec3(1.0), topLift);
+  color *= 1.0 - lowerShade;
+
+  return color;
+}
+
 void main() {
   vec2 u_resolution1x = u_resolution.xy / u_dpr;
   // center of shape 1
@@ -654,6 +666,7 @@ void main() {
       if (edgeFactor <= 0.0) {
         outColor = texture(u_blurredBg, lensUv);
         outColor = mix(outColor, vec4(u_tint.r, u_tint.g, u_tint.b, 1.0), u_tint.a * 0.8);
+        outColor.rgb = applyGlassVerticalShade(outColor.rgb);
       } else {
         // height of glass edge:
         // h = r - sqrt(r*r - x*x) // (0<=x<=r)
@@ -684,6 +697,7 @@ void main() {
 
         // basic tint
         outColor = mix(blurredPixel, vec4(u_tint.r, u_tint.g, u_tint.b, 1.0), u_tint.a * 0.8);
+        outColor.rgb = applyGlassVerticalShade(outColor.rgb);
 
         // add fresnel
         float fresnelFactor = clamp(

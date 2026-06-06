@@ -321,7 +321,7 @@ function getSwitchMetrics(width?: number, height?: number): SwitchMetrics {
   const trackHeight = Math.round(height ?? clamp(trackWidth * 0.43, 82, 102));
   const inset = Math.round(clamp(trackHeight * 0.06, 5, 7));
   const puckHeight = trackHeight - inset * 2;
-  const puckWidth = Math.round(Math.min(trackWidth - inset * 2 - 18, puckHeight * 1.68));
+  const puckWidth = Math.round(Math.min(trackWidth - inset * 2 - 18, puckHeight * 1.62));
   const puckTop = inset;
   const travel = trackWidth - puckWidth - inset * 2;
 
@@ -374,7 +374,7 @@ function getGlassPill(spring: SpringState, metrics: SwitchMetrics): PillState {
   const direction = Math.abs(spring.velocity) > 0.01 ? Math.sign(spring.velocity) : spring.target >= spring.progress ? 1 : -1;
   const speed = clamp(Math.abs(spring.velocity) / 9, 0, 1);
   const height =
-    metrics.puckHeight + (metrics.trackHeight * (1.2 + speed * 0.08) - metrics.puckHeight) * spring.glassScale;
+    metrics.puckHeight + (metrics.trackHeight * (1.26 + speed * 0.08) - metrics.puckHeight) * spring.glassScale;
   const width = metrics.puckWidth * (height / metrics.puckHeight);
   const baseX = metrics.x + metrics.inset + progress * metrics.travel;
   const baseY = metrics.y + metrics.puckTop;
