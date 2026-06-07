@@ -6,7 +6,7 @@ This package is built for frontends that want a polished switch without bringing
 
 ## Live Demo
 
-[Try the live demo](https://react-liquid-glass-switch-9135f5ito-derticeks-projects.vercel.app/)
+[Try the live demo](https://react-liquid-glass-switch-nsnbljq4b-derticeks-projects.vercel.app/)
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/DerTicek/react-liquid-glass-switch/main/assets/liquid-glass-switch-demo.gif" alt="Liquid Glass Switch animation" width="640" />
